@@ -1,0 +1,5 @@
+.DS_Store
+.agents/
+.gemini/
+__pycache__/
+*.pyc

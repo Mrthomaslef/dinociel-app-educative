@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DinoCiel — L'App Éducative de Petit Dino (3 ans)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Animated Sky Background with Soft Clouds -->
+  <div class="sky-decor" aria-hidden="true">
+    <div class="cloud cloud-1">☁️</div>
+    <div class="cloud cloud-2">☁️</div>
+    <div class="cloud cloud-3">☁️</div>
+    <div class="sun-glow"></div>
+  </div>
+
+  <!-- Confetti & Floating Stars Layer -->
+  <div id="celebration-layer" class="celebration-layer" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <!-- Top Header Bar -->
+    <header class="top-bar">
+      <div class="brand" id="btn-home-brand" role="button" tabindex="0" aria-label="Retour à l'accueil">
+        <div class="brand-logo-wrap">
+          <img src="assets/dino-idle.jpg" alt="Petit Dino" class="brand-dino-thumb" />
+        </div>
+        <div class="brand-text">
+          <h1>DinoCiel</h1>
+          <span class="age-pill">🌟 Dès 3 ans</span>
+        </div>
+      </div>
+
+      <!-- Child Reward Counter & Controls -->
+      <div class="top-actions">
+        <button id="btn-stickers-quick" class="star-counter-btn" title="Voir mes gommettes">
+          <span class="star-icon">⭐</span>
+          <span id="star-count-value" class="star-count-value">0</span>
+          <span class="star-label">Étoiles</span>
+        </button>
+
+        <button id="btn-toggle-style" class="control-pill-btn" title="Changer le style d'animation de Dino">
+          <span id="dino-style-icon">🎨</span>
+          <span id="dino-style-label">Dino Dessin 2D</span>
+        </button>
+
+        <button id="btn-toggle-voice" class="control-pill-btn active" aria-pressed="true" title="Activer ou couper la voix de Dino">
+          <span id="voice-icon">🔊</span>
+          <span class="hide-mobile">Voix</span>
+        </button>
+
+        <button id="btn-higgsfield-studio" class="control-pill-btn higgsfield-btn" title="Studio Mascotte Higgsfield">
+          <span>🎬</span>
+          <span class="hide-mobile">Higgsfield</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Layout: Left/Top Companion Mascot + Right/Main Activity Stage -->
+    <main class="main-layout">
+      <!-- PETIT DINO COMPANION PANEL (Always visible, animated, gives instructions & reacts) -->
+      <aside class="mascot-panel" aria-label="Mascotte Petit Dino">
+        <div class="mascot-card" id="mascot-card" data-state="idle">
+          <div class="mascot-state-badge" id="mascot-state-badge">🦕 Prêt à jouer !</div>
+
+          <!-- Interactive Dino Stage -->
+          <div class="mascot-stage" id="mascot-stage" role="button" tabindex="0" title="Touche Petit Dino pour lui faire une chatouille !">
+            <!-- Halo & Reaction Particles -->
+            <div class="mascot-halo"></div>
+            <div class="reaction-floaters" id="reaction-floaters">
+              <span class="floater f1">✨</span>
+              <span class="floater f2">⭐</span>
+              <span class="floater f3">💚</span>
+            </div>
+
+            <!-- 1) 3D Illustrated Mascot (Generated & Higgsfield compatible) -->
+            <div id="dino-3d-container" class="dino-visual-container">
+              <img
+                id="dino-3d-img"
+                src="assets/dino-idle.jpg"
+                alt="Petit Dino, le petit dinosaure vert"
+                class="dino-3d-img"
+              />
+              <video
+                id="dino-video-player"
+                class="dino-video-player hidden"
+                autoplay
+                loop
+                muted
+                playsinline
+              ></video>
+              <!-- Animated Talking Mouth / Sound Wave Badge on 3D Dino -->
+              <div class="talking-waves" id="talking-waves" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <!-- 2) Interactive Animated Vector SVG Rig (Blinks, talks, waves, changes expressions) -->
+            <div id="dino-svg-container" class="dino-visual-container hidden">
+              <svg viewBox="0 0 260 280" class="dino-svg-rig" aria-label="Petit Dino animé">
+                <defs>
+                  <radialGradient id="dinoBodyGrad" cx="45%" cy="35%" r="65%">
+                    <stop offset="0%" stop-color="#86EFAC" />
+                    <stop offset="55%" stop-color="#4ADE80" />
+                    <stop offset="100%" stop-color="#16A34A" />
+                  </radialGradient>
+                  <linearGradient id="dinoBellyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#FEF08A" />
+                    <stop offset="100%" stop-color="#FDE047" />
+                  </linearGradient>
+                </defs>
+                <!-- Soft Ground Shadow -->
+                <ellipse cx="130" cy="258" rx="68" ry="12" fill="#BAE6FD" opacity="0.7" class="dino-rig-shadow" />
+                <!-- Wagging Tail -->
+                <g class="dino-rig-tail">
+                  <path d="M175 198 Q230 195 236 160 Q222 162 195 174 Z" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3" />
+                  <circle cx="212" cy="170" r="6" fill="#22C55E" />
+                </g>
+                <!-- Back Crests -->
+                <g class="dino-rig-crests">
+                  <path d="M118 28 Q130 8 144 28 Z" fill="#22C55E" stroke="#15803D" stroke-width="3" />
+                  <path d="M144 33 Q162 16 168 42 Z" fill="#22C55E" stroke="#15803D" stroke-width="3" />
+                  <path d="M167 48 Q186 38 184 64 Z" fill="#22C55E" stroke="#15803D" stroke-width="3" />
+                </g>
+                <!-- Legs -->
+                <g class="dino-rig-legs">
+                  <rect x="82" y="205" width="34" height="44" rx="16" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3" />
+                  <rect x="142" y="205" width="34" height="44" rx="16" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3" />
+                  <!-- Cute Toes -->
+                  <circle cx="89" cy="247" r="6" fill="#FEF9C3" />
+                  <circle cx="99" cy="249" r="6" fill="#FEF9C3" />
+                  <circle cx="109" cy="247" r="6" fill="#FEF9C3" />
+                  <circle cx="149" cy="247" r="6" fill="#FEF9C3" />
+                  <circle cx="159" cy="249" r="6" fill="#FEF9C3" />
+                  <circle cx="169" cy="247" r="6" fill="#FEF9C3" />
+                </g>
+                <!-- Chubby Body -->
+                <ellipse cx="130" cy="178" rx="56" ry="54" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3.5" />
+                <!-- Yellow Striped Belly -->
+                <ellipse cx="128" cy="182" rx="38" ry="42" fill="url(#dinoBellyGrad)" />
+                <path d="M95 165 Q128 173 161 165" stroke="#EAB308" stroke-width="2.5" fill="none" />
+                <path d="M92 182 Q128 190 164 182" stroke="#EAB308" stroke-width="2.5" fill="none" />
+                <path d="M96 199 Q128 207 160 199" stroke="#EAB308" stroke-width="2.5" fill="none" />
+                <!-- Left Arm (Waving!) -->
+                <g class="dino-rig-arm-left">
+                  <rect x="52" y="142" width="38" height="22" rx="11" transform="rotate(-25 70 152)" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3" />
+                </g>
+                <!-- Right Arm -->
+                <g class="dino-rig-arm-right">
+                  <rect x="168" y="148" width="36" height="22" rx="11" transform="rotate(20 185 158)" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3" />
+                </g>
+                <!-- Big Cute Head -->
+                <g class="dino-rig-head">
+                  <ellipse cx="128" cy="96" rx="68" ry="58" fill="url(#dinoBodyGrad)" stroke="#15803D" stroke-width="3.5" />
+                  <!-- Forehead Spots -->
+                  <circle cx="126" cy="54" r="7" fill="#86EFAC" opacity="0.8" />
+                  <circle cx="110" cy="60" r="5" fill="#86EFAC" opacity="0.8" />
+                  <circle cx="143" cy="61" r="5.5" fill="#86EFAC" opacity="0.8" />
+                  <!-- Rosy Cheeks -->
+                  <ellipse cx="76" cy="110" rx="13" ry="8" fill="#FDA4AF" opacity="0.7" />
+                  <ellipse cx="180" cy="110" rx="13" ry="8" fill="#FDA4AF" opacity="0.7" />
+                  <!-- Eyebrows -->
+                  <path id="svg-brow-left" d="M78 64 Q94 56 108 64" stroke="#14532D" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                  <path id="svg-brow-right" d="M148 64 Q162 56 178 64" stroke="#14532D" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                  <!-- Big Sparkling Eyes -->
+                  <g class="dino-rig-eyes">
+                    <circle cx="94" cy="86" r="19" fill="#FFFFFF" stroke="#14532D" stroke-width="2.5" />
+                    <circle cx="96" cy="86" r="12" fill="#78350F" />
+                    <circle cx="96" cy="86" r="7" fill="#1C1917" />
+                    <circle cx="91" cy="80" r="4.5" fill="#FFFFFF" />
+                    <circle cx="101" cy="91" r="2" fill="#FFFFFF" />
+
+                    <circle cx="162" cy="86" r="19" fill="#FFFFFF" stroke="#14532D" stroke-width="2.5" />
+                    <circle cx="160" cy="86" r="12" fill="#78350F" />
+                    <circle cx="160" cy="86" r="7" fill="#1C1917" />
+                    <circle cx="155" cy="80" r="4.5" fill="#FFFFFF" />
+                    <circle cx="165" cy="91" r="2" fill="#FFFFFF" />
+                  </g>
+                  <!-- Cute Snout Nostrils -->
+                  <ellipse cx="118" cy="100" rx="3.5" ry="4.5" fill="#14532D" />
+                  <ellipse cx="138" cy="100" rx="3.5" ry="4.5" fill="#14532D" />
+                  <!-- Expressive Mouth -->
+                  <path id="svg-mouth" d="M98 118 Q128 144 158 118 Z" fill="#991B1B" stroke="#14532D" stroke-width="3" />
+                  <!-- Tiny Cute Baby Teeth -->
+                  <polygon points="108,121 114,121 111,128" fill="#FFFFFF" />
+                  <polygon points="142,121 148,121 145,128" fill="#FFFFFF" />
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Speech Bubble with Audio Replay Button -->
+          <div class="speech-bubble" id="speech-bubble">
+            <p id="dino-speech-text">
+              Coucou ! Je m'appelle <strong>Petit Dino</strong> ! Choisis un jeu avec moi !
+            </p>
+            <div class="speech-actions">
+              <button id="btn-replay-speech" class="btn-listen-Instruction" title="Écouter l'instruction de Petit Dino">
+                <span>🔊</span> Écouter Petit Dino
+              </button>
+              <button id="btn-tickle-dino" class="btn-tickle" title="Faire sauter Petit Dino">
+                <span>🦖</span> Coucou Dino !
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Reaction Preview Bar (Lets child or parent test Dino's animations anytime) -->
+          <div class="dino-mood-strip" aria-label="Réactions de Petit Dino">
+            <button class="mood-chip active" data-mood="idle" title="Normal">🦕 Calme</button>
+            <button class="mood-chip" data-mood="celebrate" title="Joie">🎉 Bravo !</button>
+            <button class="mood-chip" data-mood="encourage" title="Encouragement">🤔 Essaie</button>
+            <button class="mood-chip" data-mood="surprised" title="Surpris">😮 Oh !</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN EDUCATIONAL CONTENT AREA -->
+      <section class="content-area">
+        <!-- Category Navigation Tabs (Big, colorful, sky-blue & white child-friendly buttons) -->
+        <nav class="world-nav" aria-label="Activités éducatives">
+          <button class="world-tab active" data-world="home">
+            <span class="tab-emoji">🏠</span>
+            <span class="tab-label">Accueil</span>
+          </button>
+          <button class="world-tab" data-world="counting">
+            <span class="tab-emoji">🔢</span>
+            <span class="tab-label">Compter</span>
+          </button>
+          <button class="world-tab" data-world="letters">
+            <span class="tab-emoji">🔤</span>
+            <span class="tab-label">Lettres</span>
+          </button>
+          <button class="world-tab" data-world="emotions">
+            <span class="tab-emoji">😊</span>
+            <span class="tab-label">Émotions</span>
+          </button>
+          <button class="world-tab" data-world="rules">
+            <span class="tab-emoji">🌟</span>
+            <span class="tab-label">Les Règles</span>
+          </button>
+          <button class="world-tab" data-world="stickers">
+            <span class="tab-emoji">🏆</span>
+            <span class="tab-label">Gommettes</span>
+          </button>
+        </nav>
+
+        <!-- Dynamic Activity Stage -->
+        <div class="activity-stage" id="activity-stage">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- HIGGSFIELD MASCOT STUDIO MODAL -->
+  <div id="higgsfield-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="higgsfield-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-badge">🎬 Intégration Higgsfield AI</span>
+          <h2 id="higgsfield-modal-title">Studio Mascotte « Petit Dino »</h2>
+        </div>
+        <button id="btn-close-higgsfield" class="btn-close-modal" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-intro">
+          Votre mascotte <strong>Petit Dino</strong> est en <strong>dessin 2D illustré</strong> (style album jeunesse / dessin animé 2D, sans 3D) avec toutes ses animations de réaction !
+          Vous pouvez aussi générer ou importer vos propres vidéos <code>.mp4</code> / images 2D depuis <strong>Higgsfield AI</strong>.
+        </p>
+
+        <!-- CurrentMascot Gallery -->
+        <div class="higgsfield-gallery">
+          <div class="hf-pose-card">
+            <img src="assets/dino-idle.jpg" alt="Dino Accueil" />
+            <span class="hf-pose-title">🦕 Pose Accueil / Instructions</span>
+            <label class="hf-upload-btn">
+              📂 Importer image/vidéo
+              <input type="file" accept="image/*,video/*" data-target-state="idle" class="hf-file-input" hidden />
+            </label>
+          </div>
+          <div class="hf-pose-card">
+            <img src="assets/dino-celebrate.jpg" alt="Dino Bravo" />
+            <span class="hf-pose-title">🎉 Réaction « Bravo / Joie »</span>
+            <label class="hf-upload-btn">
+              📂 Importer image/vidéo
+              <input type="file" accept="image/*,video/*" data-target-state="celebrate" class="hf-file-input" hidden />
+            </label>
+          </div>
+          <div class="hf-pose-card">
+            <img src="assets/dino-encourage.jpg" alt="Dino Encourage" />
+            <span class="hf-pose-title">🤔 Réaction « Réfléchir / Courage »</span>
+            <label class="hf-upload-btn">
+              📂 Importer image/vidéo
+              <input type="file" accept="image/*,video/*" data-target-state="encourage" class="hf-file-input" hidden />
+            </label>
+          </div>
+          <div class="hf-pose-card">
+            <img src="assets/dino-emotions-grid.jpg" alt="Dino Émotions" />
+            <span class="hf-pose-title">😊 Grille des 4 Émotions (2D)</span>
+            <span class="hf-pose-sub">Joyeux, Triste, Surpris, Fâché</span>
+          </div>
+        </div>
+
+        <!-- Ready-to-copy Higgsfield Prompts -->
+        <div class="hf-prompts-box">
+          <h3>✨ Prompts Dessin 2D prêts pour Higgsfield (Image & Vidéo)</h3>
+          <div class="hf-prompt-item">
+            <div class="hf-prompt-header">
+              <strong>1. Prompt Image Dessin 2D (Soul V2 / GPT Image 2 sur Higgsfield)</strong>
+              <button class="btn-copy-prompt" data-copy="Flat 2D hand-drawn cartoon illustration of a cute friendly baby green dinosaur mascot for a 3-year-old kids educational app, classic 2D children's picture book drawing style, clean dark green ink outlines, flat pastel lime green and soft yellow belly colors, NOT 3D, big expressive cartoon eyes, cheerful smile, waving one little hand, pure white and soft sky-blue background">📋 Copier</button>
+            </div>
+            <code>Flat 2D hand-drawn cartoon illustration of a cute friendly baby green dinosaur mascot for a 3-year-old kids educational app, classic 2D children's picture book drawing style, clean dark green ink outlines, flat pastel lime green and soft yellow belly colors, NOT 3D, big expressive cartoon eyes, cheerful smile, waving one little hand, pure white and soft sky-blue background</code>
+          </div>
+
+          <div class="hf-prompt-item">
+            <div class="hf-prompt-header">
+              <strong>2. Prompt Animation Vidéo 2D (Seedance 2.5 / Kling 4.0 sur Higgsfield)</strong>
+              <button class="btn-copy-prompt" data-copy="2D hand-drawn cartoon animation: the cute flat 2D baby green dinosaur waves his little hand warmly, blinks his big cartoon eyes, smiles and talks cheerfully, then does a happy little bounce on a clean white and sky-blue cloud background, traditional 2D cartoon animation loop, NOT 3D">📋 Copier</button>
+            </div>
+            <code>2D hand-drawn cartoon animation: the cute flat 2D baby green dinosaur waves his little hand warmly, blinks his big cartoon eyes, smiles and talks cheerfully, then does a happy little bounce on a clean white and sky-blue cloud background, traditional 2D cartoon animation loop, NOT 3D</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
